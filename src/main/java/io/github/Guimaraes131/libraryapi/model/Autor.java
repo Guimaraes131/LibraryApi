@@ -12,7 +12,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@ToString
+@ToString(exclude = "livros")
 public class Autor {
 
     @Id
@@ -29,7 +29,6 @@ public class Autor {
     @Column(nullable = false, length = 50)
     private String nacionalidade;
 
-    //@OneToMany(mappedBy = "autor")
-    @Transient
+    @OneToMany(mappedBy = "autor", fetch = FetchType.LAZY)
     private List<Livro> livros;
 }
