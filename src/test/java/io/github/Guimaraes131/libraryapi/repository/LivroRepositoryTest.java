@@ -6,6 +6,7 @@ import io.github.Guimaraes131.libraryapi.model.Livro;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -103,6 +104,16 @@ class LivroRepositoryTest {
         var livro = livroRepository.findById(id).orElse(null);
 
         livroRepository.delete(livro);
+    }
+
+    @Test
+    @Transactional
+    public void getLivroAutorTest() {
+        UUID id = UUID.fromString("b6e72233-1d53-4309-830d-d58066ee8f9c");
+        var livro = livroRepository.findById(id).orElse(null);
+
+        System.out.println("Livro: " + livro.getTitulo());
+        System.out.println("Autor: " + livro.getAutor().getNome());
     }
 
     private Autor getAutorById(String id) {
