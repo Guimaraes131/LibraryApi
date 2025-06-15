@@ -72,7 +72,7 @@ class AutorRepositoryTest {
 
      @Test
     public void deleteAutorByIdTest() {
-        UUID id = UUID.fromString("8154f8d0-ec40-491d-a6ad-330fbb055aba");
+        UUID id = UUID.fromString("66da5d9a-94ac-4659-8381-fd38eceffcf1");
         repository.deleteById(id);
 
          System.out.println("Autor successfully deleted by ID");
