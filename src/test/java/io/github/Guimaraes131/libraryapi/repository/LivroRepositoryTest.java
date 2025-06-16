@@ -151,6 +151,34 @@ class LivroRepositoryTest {
         System.out.println(livro);
     }
 
+    @Test
+    public void listLivrosByTitulo() {
+        List<Livro> livros = livroRepository.listLivrosByTitulo();
+
+        livros.forEach(System.out::println);
+    }
+
+    @Test
+    public void listAutoresLivros() {
+        List<Autor> autorList = livroRepository.listAutorLivros();
+
+        autorList.forEach(System.out::println);
+    }
+
+    @Test
+    public void listLivrosTitles() {
+        List<String> titles = livroRepository.listLivrosTitles();
+
+        titles.forEach(System.out::println);
+    }
+
+    @Test
+    public void listGeneroAutorBrasileiro() {
+        List<String> generos = livroRepository.listGeneroAutorBrasileiro();
+
+        generos.forEach(System.out::println);
+    }
+
     private Autor getAutorById(String id) {
         return autorRepository.findById(UUID.fromString(id))
                 .orElse(null);
