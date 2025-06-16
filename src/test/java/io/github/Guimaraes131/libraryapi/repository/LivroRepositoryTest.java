@@ -193,6 +193,16 @@ class LivroRepositoryTest {
         results.forEach(System.out::println);
     }
 
+    @Test
+    public void deleteByGeneroTest() {
+        livroRepository.deleteByGenero(Genero.CIENCIA);
+    }
+
+    @Test
+    public void updateDataPublicacaoTest() {
+        livroRepository.updateDataPublicacao(LocalDate.of(1999, 10, 10));
+    }
+
     private Autor getAutorById(String id) {
         return autorRepository.findById(UUID.fromString(id))
                 .orElse(null);
