@@ -179,6 +179,20 @@ class LivroRepositoryTest {
         generos.forEach(System.out::println);
     }
 
+    @Test
+    public void findByGeneroNamedTest() {
+        var results = livroRepository.findByGeneroNamed(Genero.MISTERIO, "dataPublicacao");
+
+        results.forEach(System.out::println);
+    }
+
+    @Test
+    public void findByGeneroPositionalTest() {
+        var results = livroRepository.findByGeneroPositional(Genero.MISTERIO, "dataPublicacao");
+
+        results.forEach(System.out::println);
+    }
+
     private Autor getAutorById(String id) {
         return autorRepository.findById(UUID.fromString(id))
                 .orElse(null);
