@@ -23,6 +23,7 @@ public class Book {
     private LocalDate publicationDate;
 
     @Column(name = "genero")
+    @Enumerated(EnumType.STRING)
     private Genre genre;
 
     @Column(name = "preco")
