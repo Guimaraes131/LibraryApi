@@ -1,6 +1,6 @@
 package io.github.Guimaraes131.libraryapi.validator;
 
-import io.github.Guimaraes131.libraryapi.Exception.DuplicateRecordException;
+import io.github.Guimaraes131.libraryapi.exception.DuplicateRecordException;
 import io.github.Guimaraes131.libraryapi.model.Author;
 import io.github.Guimaraes131.libraryapi.repository.AuthorRepository;
 import org.springframework.stereotype.Component;

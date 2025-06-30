@@ -1,6 +1,6 @@
 package io.github.Guimaraes131.libraryapi.controller;
 
-import io.github.Guimaraes131.libraryapi.Exception.DuplicateRecordException;
+import io.github.Guimaraes131.libraryapi.exception.DuplicateRecordException;
 import io.github.Guimaraes131.libraryapi.controller.dto.AuthorDTO;
 import io.github.Guimaraes131.libraryapi.controller.dto.ErrorResponse;
 import io.github.Guimaraes131.libraryapi.model.Author;
@@ -104,20 +104,28 @@ public class AuthorController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody @Valid AuthorDTO dto, @PathVariable String id) {
-        UUID authorId = UUID.fromString(id);
+        try {
+            UUID authorId = UUID.fromString(id);
 
-        Optional<Author> authorOptional = service.get(authorId);
+            Optional<Author> authorOptional = service.get(authorId);
 
-        if (authorOptional.isPresent()) {
-            Author entity = authorOptional.get();
+            if (authorOptional.isPresent()) {
+                Author entity = authorOptional.get();
 
-            entity.setName(dto.name());
-            entity.setNationality(dto.nationality());
-            entity.setDateOfBirth(dto.dateOfBirth());
+                entity.setName(dto.name());
+                entity.setNationality(dto.nationality());
+                entity.setDateOfBirth(dto.dateOfBirth());
 
-            service.update(entity);
+                validator.validate(entity);
+                service.update(entity);
+            }
+
+            return ResponseEntity.noContent().build();
+
+        } catch (DuplicateRecordException e) {
+            ErrorResponse errorResponse = ErrorResponse.conflict("This record already exists.");
+
+            return ResponseEntity.status(errorResponse.status()).body(errorResponse);
         }
-
-        return ResponseEntity.noContent().build();
     }
 }

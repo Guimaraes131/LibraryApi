@@ -1,17 +1,20 @@
 package io.github.Guimaraes131.libraryapi.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "autor")
 @Data
+@EntityListeners(AuditingEntityListener.class)
 public class Author {
 
     @Id @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,4 +32,15 @@ public class Author {
     @OneToMany(fetch = FetchType.LAZY)
     @Transient
     private List<Book> books;
+
+    @CreatedDate
+    @Column(name = "data_cadastro")
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    @Column(name = "data_atualizacao")
+    private LocalDateTime updatedAt;
+
+    @Column(name = "id_usuario")
+    private UUID userID;
 }
