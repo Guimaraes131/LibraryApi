@@ -3,6 +3,7 @@ package io.github.Guimaraes131.libraryapi.controller;
 import io.github.Guimaraes131.libraryapi.exception.DuplicateRecordException;
 import io.github.Guimaraes131.libraryapi.controller.dto.AuthorDTO;
 import io.github.Guimaraes131.libraryapi.controller.dto.ErrorResponse;
+import io.github.Guimaraes131.libraryapi.exception.UnauthorizedOperationException;
 import io.github.Guimaraes131.libraryapi.model.Author;
 import io.github.Guimaraes131.libraryapi.service.AuthorService;
 import io.github.Guimaraes131.libraryapi.validator.AuthorValidator;
@@ -73,15 +74,24 @@ public class AuthorController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> destroy(@PathVariable String id) {
-        UUID authorId = UUID.fromString(id);
+        try {
+            UUID authorId = UUID.fromString(id);
 
-        Optional<Author> optionalAuthor = service.get(authorId);
+            Optional<Author> optionalAuthor = service.get(authorId);
 
-        if (optionalAuthor.isPresent()) {
-            service.destroy(optionalAuthor.get());
+            if (optionalAuthor.isPresent()) {
+                validator.validate(optionalAuthor.get());
+                service.destroy(optionalAuthor.get());
+            }
+
+            return ResponseEntity.noContent().build();
+
+        } catch (UnauthorizedOperationException e) {
+            ErrorResponse error = ErrorResponse.badRequest(
+                    "Failed to delete record: resource is being referenced by another entity.");
+
+            return ResponseEntity.status(error.status()).body(error);
         }
-
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping

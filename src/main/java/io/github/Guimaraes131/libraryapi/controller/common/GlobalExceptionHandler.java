@@ -2,6 +2,7 @@ package io.github.Guimaraes131.libraryapi.controller.common;
 
 import io.github.Guimaraes131.libraryapi.controller.dto.ErrorResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,5 +26,11 @@ public class GlobalExceptionHandler {
                 ).toList();
 
         return new ErrorResponse(HttpStatus.UNPROCESSABLE_ENTITY.value(), "Validation Error", errors);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleHttpMessageNotReadableException() {
+        return ErrorResponse.badRequest("Cannot parse the JSON to an entity.");
     }
 }
