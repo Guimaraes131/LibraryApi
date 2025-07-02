@@ -1,6 +1,7 @@
 package io.github.Guimaraes131.libraryapi.controller.common;
 
 import io.github.Guimaraes131.libraryapi.controller.dto.ErrorResponse;
+import io.github.Guimaraes131.libraryapi.exception.BookPriceNotSetException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
@@ -32,5 +33,11 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleHttpMessageNotReadableException() {
         return ErrorResponse.badRequest("Cannot parse the JSON to an entity.");
+    }
+
+    @ExceptionHandler(BookPriceNotSetException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBookPriceNotSetException(BookPriceNotSetException e) {
+        return ErrorResponse.badRequest(e.getMessage());
     }
 }

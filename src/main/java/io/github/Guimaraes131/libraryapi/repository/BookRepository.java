@@ -5,9 +5,12 @@ import io.github.Guimaraes131.libraryapi.model.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface BookRepository extends JpaRepository<Book, UUID> {
 
     List<Book> findAllByAuthor(Author author);
+
+    Optional<Book> findByIsbn(String isbn);
 }

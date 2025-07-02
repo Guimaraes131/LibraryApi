@@ -32,7 +32,7 @@ public class AuthorValidator {
         }
     }
 
-    public boolean authorExists(Author author) {
+    private boolean authorExists(Author author) {
         Optional<Author> optionalAuthor = repository
                 .findByNameAndNationalityAndDateOfBirth(
                         author.getName(),
@@ -44,17 +44,17 @@ public class AuthorValidator {
             return true;
         }
 
-        assert author.getId() != null;
         return optionalAuthor.isPresent() && !author.getId().equals(optionalAuthor.get().getId());
     }
 
-    public boolean authorHasBooks(Author author) {
-        List<Book> books = bookRepository.findAllByAuthor(author);
+    private boolean authorHasBooks(Author author) {
 
-        if (!books.isEmpty()) {
-            return true;
+        if (author.getId() == null) {
+            return false;
         }
 
-        return false;
+        List<Book> books = bookRepository.findAllByAuthor(author);
+
+        return !books.isEmpty();
     }
 }

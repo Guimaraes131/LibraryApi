@@ -1,11 +1,15 @@
 package io.github.Guimaraes131.libraryapi.controller;
 
+import io.github.Guimaraes131.libraryapi.controller.dto.ErrorResponse;
 import io.github.Guimaraes131.libraryapi.controller.dto.GetBookDTO;
 import io.github.Guimaraes131.libraryapi.controller.dto.PostBookDTO;
 import io.github.Guimaraes131.libraryapi.controller.mappers.BookMapper;
+import io.github.Guimaraes131.libraryapi.exception.DuplicateRecordException;
 import io.github.Guimaraes131.libraryapi.model.Book;
 import io.github.Guimaraes131.libraryapi.model.Genre;
 import io.github.Guimaraes131.libraryapi.service.BookService;
+import io.github.Guimaraes131.libraryapi.validator.BookValidator;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,15 +26,23 @@ public class BookController implements GenericController {
 
     private final BookService service;
     private final BookMapper mapper;
+    private final BookValidator validator;
 
     @PostMapping
-    public ResponseEntity<?> create(@RequestBody PostBookDTO dto) {
-        Book entity = mapper.toEntity(dto);
-        service.create(entity);
+    public ResponseEntity<?> create(@RequestBody @Valid PostBookDTO dto) {
+        try {
+            Book entity = mapper.toEntity(dto);
+            validator.validate(entity);
+            service.create(entity);
 
-        URI location = generateLocationHeader(entity.getId());
+            URI location = generateLocationHeader(entity.getId());
 
-        return ResponseEntity.created(location).build();
+            return ResponseEntity.created(location).build();
+        } catch (DuplicateRecordException e) {
+            ErrorResponse errorResponse = ErrorResponse.conflict("Duplicated ISBN.");
+
+            return ResponseEntity.status(errorResponse.status()).body(errorResponse);
+        }
     }
 
     @GetMapping("/{id}")
@@ -69,5 +81,28 @@ public class BookController implements GenericController {
                 .toList();
 
         return ResponseEntity.ok(dtos);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@RequestBody @Valid PostBookDTO dto, @PathVariable String id) {
+        try {
+            UUID uuid = UUID.fromString(id);
+
+            return service.get(uuid)
+                    .map(entity -> {
+                        Book book = mapper.toEntity(dto);
+                        book.setId(entity.getId());
+
+                        validator.validate(book);
+                        service.update(book);
+
+                        return ResponseEntity.noContent().build();
+                    }).orElseGet(() -> ResponseEntity.notFound().build());
+
+        } catch (DuplicateRecordException e) {
+            ErrorResponse errorResponse = ErrorResponse.conflict("Duplicated ISBN.");
+
+            return ResponseEntity.status(errorResponse.status()).body(errorResponse);
+        }
     }
 }

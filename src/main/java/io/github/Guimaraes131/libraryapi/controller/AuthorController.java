@@ -61,16 +61,14 @@ public class AuthorController implements GenericController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> destroy(@PathVariable String id) {
         try {
-            UUID authorId = UUID.fromString(id);
+            UUID uuid = UUID.fromString(id);
 
-            Optional<Author> optionalAuthor = service.get(authorId);
-
-            if (optionalAuthor.isPresent()) {
-                validator.validate(optionalAuthor.get());
-                service.destroy(optionalAuthor.get());
-            }
-
-            return ResponseEntity.noContent().build();
+            return service.get(uuid)
+                    .map(author -> {
+                        validator.validate(author);
+                        service.destroy(author);
+                        return ResponseEntity.noContent().build();
+                    }).orElseGet(() -> ResponseEntity.notFound().build());
 
         } catch (UnauthorizedOperationException e) {
             ErrorResponse error = ErrorResponse.badRequest(
@@ -97,22 +95,18 @@ public class AuthorController implements GenericController {
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody @Valid AuthorDTO dto, @PathVariable String id) {
         try {
-            UUID authorId = UUID.fromString(id);
+            UUID uuid = UUID.fromString(id);
 
-            Optional<Author> authorOptional = service.get(authorId);
+            return service.get(uuid)
+                    .map(entity -> {
+                        Author author = mapper.toEntity(dto);
+                        author.setId(entity.getId());
 
-            if (authorOptional.isPresent()) {
-                Author entity = authorOptional.get();
+                        validator.validate(author);
+                        service.update(author);
 
-                entity.setName(dto.name());
-                entity.setNationality(dto.nationality());
-                entity.setDateOfBirth(dto.dateOfBirth());
-
-                validator.validate(entity);
-                service.update(entity);
-            }
-
-            return ResponseEntity.noContent().build();
+                        return ResponseEntity.noContent().build();
+                    }).orElseGet(() -> ResponseEntity.notFound().build());
 
         } catch (DuplicateRecordException e) {
             ErrorResponse errorResponse = ErrorResponse.conflict("This record already exists.");

@@ -29,7 +29,6 @@ public class Author {
     @Column(name = "nacionalidade")
     private String nationality;
 
-    @OneToMany(fetch = FetchType.LAZY)
     @Transient
     private List<Book> books;
 

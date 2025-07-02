@@ -58,4 +58,8 @@ public class BookService {
 
         return repository.findAll(example);
     }
+
+    public void update(Book book) {
+        repository.save(book);
+    }
 }
