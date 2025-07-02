@@ -1,6 +1,5 @@
 package io.github.Guimaraes131.libraryapi.controller.dto;
 
-import io.github.Guimaraes131.libraryapi.model.Author;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -17,15 +16,6 @@ public record AuthorDTO(
         LocalDate dateOfBirth,
 
         @NotNull(message = "field nationality cannot be null")
-        String nationality) {
-
-    public Author mapToAuthor() {
-        Author author = new Author();
-
-        author.setName(this.name);
-        author.setDateOfBirth(this.dateOfBirth);
-        author.setNationality(this.nationality);
-
-        return author;
-    }
+        String nationality
+) {
 }
