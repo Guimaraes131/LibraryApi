@@ -40,8 +40,8 @@ public class AuthorValidator {
                         author.getDateOfBirth()
                 );
 
-        if (author.getId() == null && optionalAuthor.isPresent()) {
-            return true;
+        if (author.getId() == null) {
+            return optionalAuthor.isPresent();
         }
 
         return optionalAuthor.isPresent() && !author.getId().equals(optionalAuthor.get().getId());

@@ -25,14 +25,12 @@ import java.util.UUID;
 public class AuthorController implements GenericController {
 
     private final AuthorService service;
-    private final AuthorValidator validator;
     private final AuthorMapper mapper;
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid AuthorDTO dto) {
         try {
             Author author = mapper.toEntity(dto);
-            validator.validate(author);
             service.create(author);
 
             URI location = generateLocationHeader(author.getId());
@@ -65,7 +63,6 @@ public class AuthorController implements GenericController {
 
             return service.get(uuid)
                     .map(author -> {
-                        validator.validate(author);
                         service.destroy(author);
                         return ResponseEntity.noContent().build();
                     }).orElseGet(() -> ResponseEntity.notFound().build());

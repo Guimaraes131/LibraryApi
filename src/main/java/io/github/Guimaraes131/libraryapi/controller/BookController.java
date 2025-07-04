@@ -26,13 +26,11 @@ public class BookController implements GenericController {
 
     private final BookService service;
     private final BookMapper mapper;
-    private final BookValidator validator;
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Valid PostBookDTO dto) {
         try {
             Book entity = mapper.toEntity(dto);
-            validator.validate(entity);
             service.create(entity);
 
             URI location = generateLocationHeader(entity.getId());

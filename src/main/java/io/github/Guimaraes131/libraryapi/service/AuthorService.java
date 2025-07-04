@@ -2,6 +2,8 @@ package io.github.Guimaraes131.libraryapi.service;
 
 import io.github.Guimaraes131.libraryapi.model.Author;
 import io.github.Guimaraes131.libraryapi.repository.AuthorRepository;
+import io.github.Guimaraes131.libraryapi.validator.AuthorValidator;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.stereotype.Service;
@@ -11,15 +13,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AuthorService {
 
     private final AuthorRepository repository;
-
-    public AuthorService(AuthorRepository repository) {
-        this.repository = repository;
-    }
+    private final AuthorValidator validator;
 
     public void create(Author author) {
+        validator.validate(author);
         repository.save(author);
     }
 
@@ -48,6 +49,11 @@ public class AuthorService {
     }
 
     public void update(Author author) {
+        if (author.getId() == null) {
+            throw new IllegalArgumentException("It's not possible to update an Author withou ID");
+        }
+
+        validator.validate(author);
         repository.save(author);
     }
 }

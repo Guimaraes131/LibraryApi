@@ -29,8 +29,8 @@ public class BookValidator {
     private boolean filter(Book book) {
         Optional<Book> optionalBook = repository.findByIsbn(book.getIsbn());
 
-        if (book.getId() == null && optionalBook.isPresent()) {
-            return true;
+        if (book.getId() == null) {
+            return optionalBook.isPresent();
         }
 
         return optionalBook.isPresent() && !book.getId().equals(optionalBook.get().getId());

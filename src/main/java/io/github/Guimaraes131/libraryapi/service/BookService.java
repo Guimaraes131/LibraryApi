@@ -3,6 +3,7 @@ package io.github.Guimaraes131.libraryapi.service;
 import io.github.Guimaraes131.libraryapi.model.Book;
 import io.github.Guimaraes131.libraryapi.model.Genre;
 import io.github.Guimaraes131.libraryapi.repository.BookRepository;
+import io.github.Guimaraes131.libraryapi.validator.BookValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,11 @@ import static io.github.Guimaraes131.libraryapi.repository.specs.BookSpecs.*;
 public class BookService {
 
     private final BookRepository repository;
+    private final BookValidator validator;
 
-    public Book create(Book book) {
-        return repository.save(book);
+    public void create(Book book) {
+        validator.validate(book);
+        repository.save(book);
     }
 
     public Optional<Book> get(UUID id) {
@@ -62,6 +65,11 @@ public class BookService {
     }
 
     public void update(Book book) {
+        if (book.getId() == null) {
+            throw new IllegalArgumentException("It's not possible to update a Book without ID.");
+        }
+
+        validator.validate(book);
         repository.save(book);
     }
 }
