@@ -11,6 +11,7 @@ import io.github.Guimaraes131.libraryapi.service.BookService;
 import io.github.Guimaraes131.libraryapi.validator.BookValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -67,19 +68,19 @@ public class BookController implements GenericController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetBookDTO>> index(
+    public ResponseEntity<Page<GetBookDTO>> index(
             @RequestParam(value = "isbn", required = false) String isbn,
             @RequestParam(value = "title", required = false) String title,
             @RequestParam(value = "author-name", required = false) String authorName,
             @RequestParam(value = "genre", required = false) Genre genre,
-            @RequestParam(value = "publication-year", required = false) Integer publicationYear
+            @RequestParam(value = "publication-year", required = false) Integer publicationYear,
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "page-size", defaultValue = "10") Integer pageSize
     ) {
 
-        List<Book> books = service.index(isbn, title, authorName, genre, publicationYear);
+        Page<Book> books = service.index(isbn, title, authorName, genre, publicationYear, page, pageSize);
 
-        List<GetBookDTO> dtos = books.stream()
-                .map(mapper::toDTO)
-                .toList();
+        Page<GetBookDTO> dtos = books.map(mapper::toDTO);
 
         return ResponseEntity.ok(dtos);
     }
