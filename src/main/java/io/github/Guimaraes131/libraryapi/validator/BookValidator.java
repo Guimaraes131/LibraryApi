@@ -14,6 +14,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookValidator {
 
+    private static final int YEAR_PRICE_REQUIREMENT = 2020;
+
     private final BookRepository repository;
 
     public void validate(Book book) {
@@ -37,7 +39,6 @@ public class BookValidator {
     }
 
     private boolean missPrice(Book book) {
-        return book.getPublicationDate()
-                .isAfter(LocalDate.of(2019, 12, 31)) && book.getPrice() == null;
+        return book.getPrice() == null && book.getPublicationDate().getYear() >= YEAR_PRICE_REQUIREMENT;
     }
 }
