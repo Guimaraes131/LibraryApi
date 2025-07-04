@@ -10,4 +10,6 @@ public interface AuthorMapper {
     Author toEntity(AuthorDTO dto);
 
     AuthorDTO toDTO(Author author);
+
+    void updateFromDTO(AuthorDTO dto, Author entity);
 }

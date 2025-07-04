@@ -70,11 +70,14 @@ public class BookController implements GenericController {
 
     @GetMapping
     public ResponseEntity<List<GetBookDTO>> index(
-            @RequestParam(required = false) String isbn, @RequestParam(required = false) String title,
-            @RequestParam(required = false) String authorName, @RequestParam(required = false) Genre genre,
-            @RequestParam(required = false) LocalDate publicationDate) {
+            @RequestParam(value = "isbn", required = false) String isbn,
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "author-name", required = false) String authorName,
+            @RequestParam(value = "genre", required = false) Genre genre,
+            @RequestParam(value = "publication-year", required = false) Integer publicationYear
+    ) {
 
-        List<Book> books = service.index(isbn, title, authorName, genre, publicationDate);
+        List<Book> books = service.index(isbn, title, authorName, genre, publicationYear);
 
         List<GetBookDTO> dtos = books.stream()
                 .map(mapper::toDTO)
@@ -90,11 +93,8 @@ public class BookController implements GenericController {
 
             return service.get(uuid)
                     .map(entity -> {
-                        Book book = mapper.toEntity(dto);
-                        book.setId(entity.getId());
-
-                        validator.validate(book);
-                        service.update(book);
+                        mapper.updateFromDTO(dto, entity);
+                        service.update(entity);
 
                         return ResponseEntity.noContent().build();
                     }).orElseGet(() -> ResponseEntity.notFound().build());

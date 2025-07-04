@@ -1,19 +1,17 @@
 package io.github.Guimaraes131.libraryapi.service;
 
-import io.github.Guimaraes131.libraryapi.model.Author;
 import io.github.Guimaraes131.libraryapi.model.Book;
 import io.github.Guimaraes131.libraryapi.model.Genre;
 import io.github.Guimaraes131.libraryapi.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Example;
-import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static io.github.Guimaraes131.libraryapi.repository.specs.BookSpecs.*;
 
 @Service
 @RequiredArgsConstructor
@@ -35,28 +33,32 @@ public class BookService {
 
     public List<Book> index(String isbn, String title,
                             String authorName, Genre genre,
-                            LocalDate publicationDate) {
+                            Integer publicationYear) {
 
-        Book book = new Book();
-        Author author = new Author();
+        // deprecated
+        Specification<Book> specs = Specification.where((root, query, cb) -> cb.conjunction());
 
-        author.setName(authorName);
+        if (isbn != null) {
+            specs = specs.and(isbnEqual(isbn));
+        }
 
-        book.setIsbn(isbn);
-        book.setTitle(title);
-        book.setAuthor(author);
-        book.setPublicationDate(publicationDate);
-        book.setGenre(genre);
+        if (title != null) {
+            specs = specs.and(titleLike(title));
+        }
 
-        ExampleMatcher matcher = ExampleMatcher
-                .matching()
-                .withIgnoreCase()
-                .withIgnoreNullValues()
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        if (genre != null) {
+            specs = specs.and(genreEqual(genre));
+        }
 
-        Example<Book> example = Example.of(book, matcher);
+        if (publicationYear != null) {
+            specs = specs.and(publicationYearEqual(publicationYear));
+        }
 
-        return repository.findAll(example);
+        if (authorName != null) {
+            specs = specs.and(authorNameLike(authorName));
+        }
+
+        return repository.findAll(specs);
     }
 
     public void update(Book book) {

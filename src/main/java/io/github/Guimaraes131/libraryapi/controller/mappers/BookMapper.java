@@ -6,9 +6,10 @@ import io.github.Guimaraes131.libraryapi.model.Book;
 import io.github.Guimaraes131.libraryapi.repository.AuthorRepository;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = AuthorMapper.class)
 public abstract class BookMapper {
 
     @Autowired
@@ -18,4 +19,7 @@ public abstract class BookMapper {
     public abstract Book toEntity(PostBookDTO dto);
 
     public abstract GetBookDTO toDTO(Book book);
+
+    @Mapping(target = "id", ignore = true)
+    public abstract void updateFromDTO(PostBookDTO dto, @MappingTarget Book entity);
 }

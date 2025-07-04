@@ -99,11 +99,8 @@ public class AuthorController implements GenericController {
 
             return service.get(uuid)
                     .map(entity -> {
-                        Author author = mapper.toEntity(dto);
-                        author.setId(entity.getId());
-
-                        validator.validate(author);
-                        service.update(author);
+                        mapper.updateFromDTO(dto, entity);
+                        service.update(entity);
 
                         return ResponseEntity.noContent().build();
                     }).orElseGet(() -> ResponseEntity.notFound().build());
