@@ -3,6 +3,8 @@ package io.github.Guimaraes131.libraryapi.controller.mappers;
 import io.github.Guimaraes131.libraryapi.controller.dto.AuthorDTO;
 import io.github.Guimaraes131.libraryapi.model.Author;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface AuthorMapper {
@@ -11,5 +13,6 @@ public interface AuthorMapper {
 
     AuthorDTO toDTO(Author author);
 
-    void updateFromDTO(AuthorDTO dto, Author entity);
+    @Mapping(target = "id", ignore = true)
+    void updateFromDTO(AuthorDTO dto, @MappingTarget Author entity);
 }

@@ -8,7 +8,6 @@ import io.github.Guimaraes131.libraryapi.exception.DuplicateRecordException;
 import io.github.Guimaraes131.libraryapi.model.Book;
 import io.github.Guimaraes131.libraryapi.model.Genre;
 import io.github.Guimaraes131.libraryapi.service.BookService;
-import io.github.Guimaraes131.libraryapi.validator.BookValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -16,8 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
-import java.time.LocalDate;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
