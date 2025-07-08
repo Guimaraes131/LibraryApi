@@ -1,4 +1,4 @@
-create table autor(
+create table autor (
 	id uuid not null primary key,
 	nome varchar(100) not null,
 	data_nascimento date not null,
@@ -8,7 +8,7 @@ create table autor(
 	id_usuario uuid
 );
 
-create table livro(
+create table livro (
 	id uuid not null primary key,
 	isbn varchar(20) not null,
 	titulo varchar(150) not null,
@@ -20,4 +20,11 @@ create table livro(
     id_usuario uuid
 	id_autor uuid not null references autor(id),
 	constraint chk_genero check (genero in ('FICCAO', 'ROMANCE', 'BIOGRAFIA', 'CIENCIA', 'FANTASIA', 'MISTERIO'))
+);
+
+CREATE TABLE tb_user (
+	id UUID NOT NULL PRIMARY KEY,
+	login VARCHAR(20) NOT NULL UNIQUE,
+	password VARCHAR(300) NOT NULL,
+	roles VARCHAR[]
 );

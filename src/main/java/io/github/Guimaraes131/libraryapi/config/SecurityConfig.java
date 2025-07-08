@@ -2,7 +2,6 @@ package io.github.Guimaraes131.libraryapi.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,14 +19,14 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(HttpMethod.POST, "/users").permitAll();
+                    auth.requestMatchers("/users").permitAll();
                     auth.requestMatchers("/authors/**").hasRole("MANAGER");
-                    auth.requestMatchers("/books/**").hasAnyRole("OPERATOR", "MANAGER");
+                    auth.requestMatchers("/books/**").hasAnyRole("MANAGER", "OPERATOR");
 
                     auth.anyRequest().authenticated();
                 })
@@ -42,15 +41,15 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder encoder) {
         UserDetails user1 = User.builder()
-                .username("Operator")
-                .password(encoder.encode("123"))
-                .roles("OPERATOR")
+                .username("Manager")
+                .password("123")
+                .roles("MANAGER")
                 .build();
 
         UserDetails user2 = User.builder()
-                .username("Manager")
-                .password(encoder.encode("123"))
-                .roles("MANAGER")
+                .username("Operator")
+                .password("123")
+                .roles("OPERATOR")
                 .build();
 
         return new InMemoryUserDetailsManager(user1, user2);
