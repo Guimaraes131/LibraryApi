@@ -5,6 +5,7 @@ import io.github.Guimaraes131.libraryapi.controller.dto.FieldError;
 import io.github.Guimaraes131.libraryapi.exception.BookPriceNotSetException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -43,5 +44,11 @@ public class GlobalExceptionHandler {
                 "Validation Error.",
                 List.of(new FieldError("price", e.getMessage()))
         );
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleAccessDeniedException(AccessDeniedException e) {
+        return new ErrorResponse(HttpStatus.FORBIDDEN.value(), "Access Denied.", List.of());
     }
 }

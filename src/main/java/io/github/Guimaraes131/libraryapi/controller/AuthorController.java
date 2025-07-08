@@ -1,22 +1,20 @@
 package io.github.Guimaraes131.libraryapi.controller;
 
-import io.github.Guimaraes131.libraryapi.controller.mappers.AuthorMapper;
-import io.github.Guimaraes131.libraryapi.exception.DuplicateRecordException;
 import io.github.Guimaraes131.libraryapi.controller.dto.AuthorDTO;
 import io.github.Guimaraes131.libraryapi.controller.dto.ErrorResponse;
+import io.github.Guimaraes131.libraryapi.controller.mappers.AuthorMapper;
+import io.github.Guimaraes131.libraryapi.exception.DuplicateRecordException;
 import io.github.Guimaraes131.libraryapi.exception.UnauthorizedOperationException;
 import io.github.Guimaraes131.libraryapi.model.Author;
 import io.github.Guimaraes131.libraryapi.service.AuthorService;
-import io.github.Guimaraes131.libraryapi.validator.AuthorValidator;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -28,6 +26,7 @@ public class AuthorController implements GenericController {
     private final AuthorMapper mapper;
 
     @PostMapping
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<?> create(@RequestBody @Valid AuthorDTO dto) {
         try {
             Author author = mapper.toEntity(dto);
@@ -45,6 +44,7 @@ public class AuthorController implements GenericController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER', 'OPERATOR')")
     public ResponseEntity<AuthorDTO> get(@PathVariable String id) {
         UUID authorId = UUID.fromString(id);
 
@@ -57,6 +57,7 @@ public class AuthorController implements GenericController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<?> destroy(@PathVariable String id) {
         try {
             UUID uuid = UUID.fromString(id);
@@ -76,6 +77,7 @@ public class AuthorController implements GenericController {
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('MANAGER', 'OPERATOR')")
     public ResponseEntity<List<AuthorDTO>> index(
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "nationality", required = false) String nationality) {
@@ -90,6 +92,7 @@ public class AuthorController implements GenericController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<?> update(@RequestBody @Valid AuthorDTO dto, @PathVariable String id) {
         try {
             UUID uuid = UUID.fromString(id);
