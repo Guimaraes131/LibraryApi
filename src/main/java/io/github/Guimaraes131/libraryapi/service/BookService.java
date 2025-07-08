@@ -3,6 +3,7 @@ package io.github.Guimaraes131.libraryapi.service;
 import io.github.Guimaraes131.libraryapi.model.Book;
 import io.github.Guimaraes131.libraryapi.model.Genre;
 import io.github.Guimaraes131.libraryapi.repository.BookRepository;
+import io.github.Guimaraes131.libraryapi.security.SecurityService;
 import io.github.Guimaraes131.libraryapi.validator.BookValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,9 +24,14 @@ public class BookService {
 
     private final BookRepository repository;
     private final BookValidator validator;
+    private final SecurityService securityService;
 
     public void create(Book book) {
         validator.validate(book);
+
+        var user = securityService.getLoggedInUser();
+
+        book.setUser(user);
         repository.save(book);
     }
 

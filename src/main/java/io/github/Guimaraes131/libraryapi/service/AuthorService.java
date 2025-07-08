@@ -2,6 +2,7 @@ package io.github.Guimaraes131.libraryapi.service;
 
 import io.github.Guimaraes131.libraryapi.model.Author;
 import io.github.Guimaraes131.libraryapi.repository.AuthorRepository;
+import io.github.Guimaraes131.libraryapi.security.SecurityService;
 import io.github.Guimaraes131.libraryapi.validator.AuthorValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Example;
@@ -18,9 +19,14 @@ public class AuthorService {
 
     private final AuthorRepository repository;
     private final AuthorValidator validator;
+    private final SecurityService securityService;
 
     public void create(Author author) {
         validator.validate(author);
+
+        var user = securityService.getLoggedInUser();
+
+        author.setUser(user);
         repository.save(author);
     }
 
