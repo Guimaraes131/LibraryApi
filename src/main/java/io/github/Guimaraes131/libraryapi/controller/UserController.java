@@ -3,6 +3,7 @@ package io.github.Guimaraes131.libraryapi.controller;
 import io.github.Guimaraes131.libraryapi.controller.dto.PostUserDTO;
 import io.github.Guimaraes131.libraryapi.controller.mappers.UserMapper;
 import io.github.Guimaraes131.libraryapi.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ public class UserController implements GenericController {
     private final UserMapper mapper;
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody PostUserDTO dto) {
+    public ResponseEntity<Void> create(@RequestBody @Valid PostUserDTO dto) {
         var user = mapper.toEntity(dto);
         service.create(user);
 

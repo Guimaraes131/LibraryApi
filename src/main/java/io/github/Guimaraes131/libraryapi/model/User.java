@@ -24,6 +24,7 @@ public class User {
 
     private String login;
     private String password;
+    private String email;
 
     @Type(ListArrayType.class)
     @Column(name = "roles", columnDefinition = "VARCHAR[]")
