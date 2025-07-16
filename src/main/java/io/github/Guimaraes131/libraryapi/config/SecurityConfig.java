@@ -1,6 +1,7 @@
 package io.github.Guimaraes131.libraryapi.config;
 
 import io.github.Guimaraes131.libraryapi.security.CustomUserDetailsService;
+import io.github.Guimaraes131.libraryapi.security.SocialLoginSuccessHandler;
 import io.github.Guimaraes131.libraryapi.service.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,7 +23,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, SocialLoginSuccessHandler successHandler) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
@@ -37,6 +38,7 @@ public class SecurityConfig {
                 })
                 .oauth2Login(oauth2 -> {
                     oauth2.loginPage("/login");
+                    oauth2.successHandler(successHandler);
                 })
                 .build();
     }
