@@ -26,4 +26,8 @@ public class UserService {
                 () -> new UsernameNotFoundException("User not found")
         );
     }
+
+    public User getByEmail(String email) {
+        return repository.findByEmail(email);
+    }
 }
